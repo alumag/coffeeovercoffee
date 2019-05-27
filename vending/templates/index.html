@@ -3,7 +3,7 @@
 {% block content %}
 <form class="contact100-form validate-form" action="" method="post">
         <span class="contact100-form-title">
-                <h1>☕ Make an order NOW! ☕</h1>
+                <h1>☕ Order coffee! ☕</h1>
                 <!-- Order counter -->
                 {% if order_count is 0 %}
                 Be the first to order coffee!
@@ -14,7 +14,7 @@
                 {% endif %}
         </span>
 
-        {% if form and not machine_errors %}
+        {% if form %}
         {% csrf_token %}
         <!-- Coffee Form -->
         <!-- Name input-->
@@ -38,10 +38,18 @@
                 Make me a cup of coffee!!
             </button>
         </div>
-        {% else %}
         <!-- ERROR: machine is may making coffee right now -->
+            {% if machine_error %}
+            The machine is not available right now, Try to send your request again later!
+            {% endif %}
+            {% if request_succeed %}
+            We got your request! Enjoy you coffee :)
+            {% endif %}
+            {% if validation_error %}
+            Nice try
+            {% endif %}
+        {% else %}
         Sorry, The machine is unavilable right meow. Please wait :)
         {% endif %}
-
     </form>
 {% endblock %}
