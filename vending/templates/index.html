@@ -2,34 +2,44 @@
 
 {% block content %}
 <form class="contact100-form validate-form" action="" method="post">
-        {% csrf_token %}
         <span class="contact100-form-title">
                 <h1>☕ Make an order NOW! ☕</h1>
+                <!-- Order counter -->
+                {% if order_count == 0 %}
+                Be the first to order coffee!
+                {% else if order count == 1 %}
+                One order made throug CoffeeOverCoffee system
+                {% else %}
                 {{ orders_count }} orders made over coffee!
+                {% endif %}
         </span>
 
-        {% if form %}
+        {% if form and not machine_errors %}
+        {% csrf_token %}
+        <!-- Coffee Form -->
+        <!-- Name input-->
         <div class="wrap-input100 validate-input" data-validate="Name is required">
-                <label class="label-input100" for="name">Full name</label>
-                {{ form.customer_name }}
-                <span class="focus-input100"></span>
+            <label class="label-input100" for="name">Full name</label>
+            {{ form.customer_name }}
+            <span class="focus-input100"></span>
+        </div>
+        <!-- Coffee type selection -->
+        <div class="wrap-input100">
+            <div class="label-input100">Select Coffee</div>
+            <div>
+                {{ form.coffee_type }}
+                <div class="dropDownSelect2"></div>
             </div>
-
-            <div class="wrap-input100">
-					<div class="label-input100">Select Coffee</div>
-					<div>
-                        {{ form.coffee_type }}
-						<div class="dropDownSelect2"></div>
-					</div>
-					<span class="focus-input100"></span>
-				</div>
-    
-            <div class="container-contact100-form-btn">
-                <button class="contact100-form-btn">
-                    Make me a cup of coffee!!
-                </button>
-            </div>
+            <span class="focus-input100"></span>
+        </div>
+        <!-- Send btn -->
+        <div class="container-contact100-form-btn">
+            <button class="contact100-form-btn">
+                Make me a cup of coffee!!
+            </button>
+        </div>
         {% else %}
+        <!-- ERROR: machine is may making coffee right now -->
         Sorry, The machine is unavilable right meow. Please wait :)
         {% endif %}
 

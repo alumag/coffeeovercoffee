@@ -20,12 +20,14 @@ def encrypt(blob):
 
 
 def write_packet(encrypted_hex):
+    # Send the data to the arduino
     s = serial.Serial("/dev/ttyUSB0", 115200)
     s.write(encrypted_hex)
     s.close()
 
 
 def create_order(form):
+    # Make order object
     data = form.cleaned_data
     order = CoffeeOrder(
         customer=data['customer_name'],
@@ -33,10 +35,13 @@ def create_order(form):
     )
     order.save()
 
+    # Update the machine state
     machine = VendingMachine.objects.all()[0]
     machine.orders_counter += 1
+    machine.availability = False
     machine.save()
 
+    # Send the coffee request
     encrypted_coffee = encrypt(order.coffee.code)
     write_packet(encrypted_coffee)
 
@@ -44,19 +49,30 @@ def create_order(form):
 def index(request):
     """View function for home page of site."""
     machine = VendingMachine.objects.all()[0]
+    availability = machine.availability
+
+    error = False
 
     if request.method == 'POST':
         form = OrderCoffeeForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and availability:
             create_order(form)
-    elif machine.availability:
+        else:
+            error = True
+
+    elif availability:
+        # GET: make new order
         form = OrderCoffeeForm()
+
     else:
+        # The machine is not ready
         form = None
+        error = True
     
     context = {
         "orders_count": machine.orders_counter,
-        "form": form
+        "form": form,
+        "machine_errors": error
     }
     
     return render(request, 'index.html', context=context)
