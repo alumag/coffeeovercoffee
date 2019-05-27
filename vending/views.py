@@ -47,6 +47,7 @@ def create_order(form):
 
     # Make order object
     _create_order_obj(form.cleaned_data)
+    machine = VendingMachine.objects.all()[0]
     machine.orders_counter += 1
     machine.save()
 
