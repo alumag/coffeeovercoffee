@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form class="contact100-form validate-form" action="" method="post">
+        {% csrf_token %}
+        <span class="contact100-form-title">
+                <h1>☕ Make an order NOW! ☕</h1>
+                {{ orders_count }} orders made over coffee!
+        </span>
+
+        {% if form %}
+        <div class="wrap-input100 validate-input" data-validate="Name is required">
+                <label class="label-input100" for="name">Full name</label>
+                {{ form.customer_name }}
+                <span class="focus-input100"></span>
+            </div>
+
+            <div class="wrap-input100">
+					<div class="label-input100">Select Coffee</div>
+					<div>
+                        {{ form.coffee_type }}
+						<div class="dropDownSelect2"></div>
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+    
+            <div class="container-contact100-form-btn">
+                <button class="contact100-form-btn">
+                    Make me a cup of coffee!!
+                </button>
+            </div>
+        {% else %}
+        Sorry, The machine is unavilable right meow. Please wait :)
+        {% endif %}
+
+    </form>
+{% endblock %}
