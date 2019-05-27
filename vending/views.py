@@ -37,6 +37,7 @@ def _create_order_obj(data):
     )
     order.save()
     logger.info("Order created: {} by {}".format(order.coffee.code, order.customer))
+    return order
 
 
 def create_order(form):
@@ -46,7 +47,7 @@ def create_order(form):
     ## -- Critical section end ##
 
     # Make order object
-    _create_order_obj(form.cleaned_data)
+    order = _create_order_obj(form.cleaned_data)
     machine = VendingMachine.objects.all()[0]
     machine.orders_counter += 1
     machine.save()
