@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from background_task import background
 
 from vending.models import VendingMachine, CoffeeOrder, CoffeeType
 from vending.forms import OrderCoffeeForm
@@ -16,14 +17,22 @@ def encrypt(blob):
         lst.append(b)
         hex_blob = hex_blob >> 8
 
-    return int("".join([hex(value)[2:] for value in lst[::-1]]), 16)
+    return "".join([hex(value)[2:] for value in lst[::-1]])
 
 
 def write_packet(encrypted_hex):
     # Send the data to the arduino
     s = serial.Serial("/dev/ttyUSB0", 115200)
-    s.write(encrypted_hex)
+    s.write(bytearray.fromhex(encrypted_hex))
     s.close()
+
+
+@background(schedule=60*3)
+def unlock_machine():
+    print("Machine Unlocked")
+    machine = VendingMachine.objects.all()[0]
+    machine.availability = True
+    machine.save()
 
 
 def create_order(form):
@@ -40,6 +49,7 @@ def create_order(form):
     machine.orders_counter += 1
     machine.availability = False
     machine.save()
+    unlock_machine()
 
     # Send the coffee request
     encrypted_coffee = encrypt(order.coffee.code)
