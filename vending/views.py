@@ -16,7 +16,7 @@ def encrypt(blob):
         lst.append(b)
         hex_blob = hex_blob >> 8
 
-    return int("".join([hex(value)[2:] for value in arr[::-1]]), 16)
+    return int("".join([hex(value)[2:] for value in lst[::-1]]), 16)
 
 
 def write_packet(encrypted_hex):
