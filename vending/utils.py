@@ -1,5 +1,5 @@
-import serial
 import time
+import subprocess
 
 device = "/dev/ttyUSB0"
 
@@ -15,15 +15,11 @@ def encrypt(blob):
         lst.append(b)
         hex_blob = hex_blob >> 8
 
-    print(lst)
     return lst[::-1]
 
 
 def write_packet(encrypted_hex):
     """ Send the data to the arduino """
-    s = serial.Serial(device, 115200)
-    data = serial.to_bytes(encrypted_hex)
-    s.write(data)
-    print("Write: ", data)
-    s.close()
+    data = "".join([hex(value)[2:] for value in encrypted_hex]) 
+    subprocess.Popen(["sudo", "python","/home/pi/write_to_serial.py",data])
 
