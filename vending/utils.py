@@ -1,4 +1,7 @@
 import serial
+import time
+
+device = "/dev/ttyUSB0"
 
 def encrypt(blob):
     """ Encrypt coffee packets """
@@ -12,11 +15,15 @@ def encrypt(blob):
         lst.append(b)
         hex_blob = hex_blob >> 8
 
-    return "".join([hex(value)[2:] for value in lst[::-1]])
+    print(lst)
+    return lst[::-1]
 
 
 def write_packet(encrypted_hex):
     """ Send the data to the arduino """
-    s = serial.Serial("/dev/ttyUSB0", 115200)
-    s.write(bytearray.fromhex(encrypted_hex))
+    s = serial.Serial(device, 115200)
+    data = serial.to_bytes(encrypted_hex)
+    s.write(data)
+    print("Write: ", data)
     s.close()
+

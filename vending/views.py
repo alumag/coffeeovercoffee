@@ -18,7 +18,7 @@ def unlock_machine():
     machine = VendingMachine.objects.all()[0]
     machine.availability = True
     machine.save()
-    logger.info("Machine Unlocked")
+    print("Machine Unlocked")
 
 
 def lock_machine():
@@ -27,7 +27,7 @@ def lock_machine():
         raise MachineUnavailableError()
     machine.availability = False
     machine.save()
-    logger.info("Machine locked")
+    print("Machine locked")
 
 
 def _create_order_obj(data):
@@ -36,7 +36,7 @@ def _create_order_obj(data):
         coffee=data['coffee_type']
     )
     order.save()
-    logger.info("Order created: {} by {}".format(order.coffee.code, order.customer))
+    print("Order created: {} by {}".format(order.coffee.code, order.customer))
     return order
 
 
@@ -99,3 +99,4 @@ def index(request):
     )
     
     return render(request, 'index.html', context=context)
+
